@@ -1,16 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { Container } from "./styles";
 
+interface TransactionData {
+  id: number;
+  title: string;
+  createdAt: string;
+  amount: number;
+  category: string;
+}
+
 const TransactionTable = () => {
+  const [transactionData, setTransactionData] = useState<TransactionData[]>([]);
   useEffect(() => {
     const getData = async () => {
-      const transaction = await api.get(
-        "http://127.0.0.1:5173/api/transactions"
-      );
-      console.log(transaction.data);
+      const { transactions } = await (
+        await api.get("http://127.0.0.1:5173/api/transactions")
+      ).data;
+      setTransactionData([...transactions]);
     };
-
     getData();
   }, []);
 
@@ -26,30 +34,23 @@ const TransactionTable = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="title"> Desenvolvimento de website</td>
-            <td className="deposity"> 12 000</td>
-            <td>Desenvolvimento</td>
-            <td>20/04/2000</td>
-          </tr>
-          <tr>
-            <td className="title"> Desenvolvimento de website</td>
-            <td className="deposity"> 12 000</td>
-            <td>Desenvolvimento</td>
-            <td>20/04/2000</td>
-          </tr>
-          <tr>
-            <td className="title">Desenvolvimento de website</td>
-            <td className="deposity"> 12 000</td>
-            <td>Desenvolvimento</td>
-            <td>20/04/2000</td>
-          </tr>
-          <tr>
-            <td className="title">Desenvolvimento de website</td>
-            <td className="withdrow"> 12 000</td>
-            <td>Desenvolvimento</td>
-            <td>20/04/2000</td>
-          </tr>
+          {transactionData.map(({ id, title, amount, category, createdAt }) => {
+            return (
+              <tr key={id}>
+                <td className="title">{title}</td>
+                <td className="deposity">
+                  {new Intl.NumberFormat("pt-mz", {
+                    style: "currency",
+                    currency: "mzn",
+                  }).format(amount)}
+                </td>
+                <td>{category}</td>
+                <td>
+                  {new Intl.DateTimeFormat("pt-pt").format(new Date(createdAt))}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </Container>
