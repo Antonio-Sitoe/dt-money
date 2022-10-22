@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import Modal from "react-modal";
 import CloseImg from "../../assets/fechar.svg";
 import IncomeImg from "../../assets/entradas.svg";
@@ -10,6 +10,7 @@ import {
   TransactionType,
 } from "./styles";
 import { api } from "../../services/api";
+import { TransactionContext } from "../../context/TransactionContext";
 
 interface NewTransacitonModalProps {
   isNewTransactionModalOpen: boolean;
@@ -19,6 +20,7 @@ const NewTransacitonModal = ({
   isNewTransactionModalOpen,
   handleCloseTransactionModal,
 }: NewTransacitonModalProps) => {
+  const { CreateTransaction } = useContext(TransactionContext);
   const [type, setType] = useState("deposit");
   const [title, setTitle] = useState("");
   const [value, setValue] = useState(0);
@@ -26,17 +28,19 @@ const NewTransacitonModal = ({
 
   const handleSubmitTransaction = async (e: FormEvent) => {
     e.preventDefault();
-
-    const data = {
+    const createdAt = new Date();
+    await CreateTransaction({
       type,
       title,
       value,
       category,
-    };
-
-    const postTransactions = await api.post("transactions", data);
-    console.log(postTransactions)
-    // handleCloseTransactionModal();
+      createdAt,
+    });
+    setType("deposit");
+    setTitle("");
+    setValue(0);
+    setCategory("");
+    handleCloseTransactionModal();
   };
   return (
     <Modal
