@@ -19,7 +19,15 @@ export const SumaryItems = styled.div`
     justify-content: space-between;
   }
   strong {
+    display: block;
     margin-top: 1rem;
     font-size: 2rem;
+    line-height: 3rem;
+    font-weight: 500;
+  }
+
+  &.highLigthBackground {
+    background: var(--green);
+    color: var(--shape);
   }
 `;

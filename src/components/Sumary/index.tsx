@@ -1,7 +1,7 @@
 import { Container, SumaryItems } from "./styles";
+import Total from "../../assets/total.svg";
 import IncomeImg from "../../assets/entradas.svg";
 import OutComeImg from "../../assets/saídas.svg";
-import Total from "../../assets/total.svg";
 
 const Sumary = () => {
   return (
@@ -20,7 +20,7 @@ const Sumary = () => {
         </header>
         <strong> - R1000,00</strong>
       </SumaryItems>
-      <SumaryItems>
+      <SumaryItems className='highLigthBackground'>
         <header>
           <p>Total</p>
           <img src={Total} alt="Total" />
