@@ -1,29 +1,29 @@
 import Dashboard from "./components/Dashboard";
 import { Header } from "./components/Header";
 import { GlobalStyle } from "./styles/global";
-import { createServer } from "miragejs";
+import { createServer, Model } from "miragejs";
 import Modal from "react-modal";
 import { useState } from "react";
+import NewTransacitonModal from "./components/newTransactionModal/Modal";
 
 createServer({
+  models: {
+    transaction: Model,
+  },
   routes() {
     this.namespace = "api";
 
     this.get("transactions", () => {
-      return [
-        {
-          id: "1",
-          title: "Transaction 1",
-          amount: "400",
-          type: "deposity",
-          category: "Food",
-          createAt: "2017",
-        },
-      ];
+      return this.schema.all("transaction");
+    });
+
+    this.post("transactions", (schema, req) => {
+      const { requestBody }: any = req;
+      return schema.create("transaction", JSON.parse(requestBody));
     });
   },
 });
-
+Modal.setAppElement("#root");
 export function App() {
   const [isNewTransactionModalOpen, setIsNewTransactionModalOpen] =
     useState(false);
@@ -39,12 +39,11 @@ export function App() {
     <>
       <Header handleOpenTransactionModal={handleOpenTransactionModal} />
       <Dashboard />
-      <Modal
-        isOpen={isNewTransactionModalOpen}
-        onRequestClose={handleCloseTransactionModal}
-      >
-        <h2>Cadastrar transacao</h2>
-      </Modal>
+      <NewTransacitonModal
+        isNewTransactionModalOpen={isNewTransactionModalOpen}
+        handleCloseTransactionModal={handleCloseTransactionModal}
+      />
+
       <GlobalStyle />
     </>
   );

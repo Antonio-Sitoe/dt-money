@@ -4,8 +4,14 @@ import { Container } from "./styles";
 
 const TransactionTable = () => {
   useEffect(() => {
-    // const getData
-    const transaction = api.get("http://127.0.0.1:5173/api/transactions");
+    const getData = async () => {
+      const transaction = await api.get(
+        "http://127.0.0.1:5173/api/transactions"
+      );
+      console.log(transaction.data);
+    };
+
+    getData();
   }, []);
 
   return (
